@@ -46,8 +46,7 @@
    **注意：** 指定正确的存储路径（例如 `flash/`）并使用 `verbose` 模式以发现任何错误：
    ```routeros
    /import file-name=flash/geo-policy.rsc verbose=yes
-
-```
+   ```
 
 ### 第 3 步：配置实时仪表板
 
