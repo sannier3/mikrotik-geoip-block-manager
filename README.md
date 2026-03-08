@@ -1,7 +1,7 @@
 # 🌍 MikroTik Geo IP script Generator & Live Dashboard
 
-**__Readme Languages__** [![Français](https://img.shields.io/badge/lang-Français-lightgrey.svg)](README.md)
-[![English](https://img.shields.io/badge/lang-English-blue.svg)](README.en.md)
+**__Readme Languages__** [![Français](https://img.shields.io/badge/lang-Français-blue.svg)](README.md)
+[![English](https://img.shields.io/badge/lang-English-lightgrey.svg)](README.en.md)
 [![Deutsch](https://img.shields.io/badge/lang-Deutsch-lightgrey.svg)](README.de.md)
 [![Español](https://img.shields.io/badge/lang-Español-lightgrey.svg)](README.es.md)
 [![Русский](https://img.shields.io/badge/lang-Русский-lightgrey.svg)](README.ru.md)
