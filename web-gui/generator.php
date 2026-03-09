@@ -105,11 +105,23 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                     </p>
                 </div>
 
-                <input type="text" id="country_search" data-i18n-ph="search_ph" placeholder="Rechercher un pays dans la liste ci-dessous..." class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 mb-4 text-white focus:outline-none focus:border-blue-500">
+                <input type="text" id="country_search" data-i18n-ph="search_ph" placeholder="Rechercher un pays dans la liste ci-dessous..." class="w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-2 mb-2 text-white focus:outline-none focus:border-blue-500">
                 
-                <div class="flex justify-between text-xs text-gray-400 mb-2 px-1">
-                    <button onclick="selectAll(true)" data-i18n="btn_sel_all" class="hover:text-blue-400 transition">Tout sélectionner</button>
-                    <button onclick="selectAll(false)" data-i18n="btn_desel_all" class="hover:text-red-400 transition">Tout désélectionner</button>
+                <div class="flex items-center justify-between text-xs text-gray-400 mb-2 px-1">
+                    <div>
+                        <span id="country_count_selected">0</span>
+                        <span>/</span>
+                        <span id="country_count_total">0</span>
+                        <span data-i18n="label_countries_short">pays sélectionnés</span>
+                    </div>
+                    <div class="space-x-3">
+                        <button onclick="selectAll(true)" data-i18n="btn_sel_all" class="hover:text-blue-400 transition">Tout sélectionner</button>
+                        <button onclick="selectAll(false)" data-i18n="btn_desel_all" class="hover:text-red-400 transition">Tout désélectionner</button>
+                    </div>
+                </div>
+
+                <div id="country_loading" class="text-xs text-gray-400 mb-1 px-1 hidden" data-i18n="loading_countries">
+                    Chargement de la liste des pays...
                 </div>
 
                 <div id="country_container" class="country-list flex-1 overflow-y-auto space-y-1 pr-2 bg-gray-800/30 rounded-lg p-2 border border-gray-700/50">
@@ -206,6 +218,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                         </div>
                         <div class="text-xs text-gray-400 bg-gray-900/50 p-3 rounded font-mono h-24 overflow-y-auto flex flex-col-reverse" id="prog_log"></div>
                     </div>
+
+                    <div id="summary_area" class="hidden mt-4 text-xs text-gray-300 border-t border-gray-700 pt-3 space-y-1">
+                        <div class="font-semibold text-gray-200">Résumé de la génération</div>
+                        <div id="summary_line1"></div>
+                        <div id="summary_line2"></div>
+                        <div id="summary_line3"></div>
+                    </div>
                 </div>
 
                 <div class="glass-panel p-6 shadow-xl">
@@ -240,6 +259,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 info_text: "Certains pays hébergent des infrastructures mondiales. Les bloquer peut casser des services légitimes :<br>• <strong>AU</strong> (Australie) : Héberge les IP de Cloudflare/APNIC (ex: DNS 1.1.1.1).<br>• <strong>IN</strong> (Inde) : Hub IT mondial et outsourcing.<br>• <strong>IL</strong> (Israël) : Hub mondial de Cybersécurité et SaaS.<br>• <strong>EE</strong> (Estonie) & <strong>BG</strong> (Bulgarie) : Très intégrés à l'IT de l'UE.<br>• <strong>AE</strong> (Émirats) : Gros hub AWS/Azure pour le Moyen-Orient.<br><span class='italic text-blue-400/80'>Ces pays ont été volontairement exclus de la sélection par défaut.</span>",
                 search_ph: "Rechercher un pays dans la liste ci-dessous...",
                 btn_sel_all: "Tout sélectionner", btn_desel_all: "Tout désélectionner",
+                label_countries_short: "pays sélectionnés",
+                loading_countries: "Chargement de la liste des pays...",
                 wan_title: "Interface WAN", wan_list: "Interface List (ex: WAN)", wan_single: "Interface simple (ex: ether1)", wan_ph: "Nom de l'interface ou liste",
                 opt_title: "Options Globales", opt_merge_label: "Comportement des Listes d'IP",
                 opt_replace: "Replace (Supprime l'ancienne liste et recrée, recommandé)", opt_keep: "Keep (Conserve l'existant, ajoute les nouvelles IP)",
@@ -263,6 +284,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 info_text: "Some countries host global infrastructure. Blocking them might break legitimate services:<br>• <strong>AU</strong> (Australia): Hosts Cloudflare/APNIC IPs (e.g. DNS 1.1.1.1).<br>• <strong>IN</strong> (India): Global IT & outsourcing hub.<br>• <strong>IL</strong> (Israel): Global Cybersecurity & SaaS hub.<br>• <strong>EE</strong> (Estonia) & <strong>BG</strong> (Bulgaria): Highly integrated into EU IT.<br>• <strong>AE</strong> (UAE): Major AWS/Azure hub for the Middle East.<br><span class='italic text-blue-400/80'>These countries were intentionally excluded from the default selection.</span>",
                 search_ph: "Search a country in the list below...",
                 btn_sel_all: "Select All", btn_desel_all: "Deselect All",
+                label_countries_short: "countries selected",
+                loading_countries: "Retrieving country list...",
                 wan_title: "WAN Interface", wan_list: "Interface List (e.g. WAN)", wan_single: "Single Interface (e.g. ether1)", wan_ph: "Interface or list name",
                 opt_title: "Global Options", opt_merge_label: "IP Lists Behavior",
                 opt_replace: "Replace (Deletes old list and recreates, recommended)", opt_keep: "Keep (Keeps existing, appends new IPs)",
@@ -286,6 +309,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 info_text: "Einige Länder hosten globale Infrastruktur. Das Blockieren kann legitime Dienste unterbrechen:<br>• <strong>AU</strong> (Australien): Cloudflare/APNIC IPs (z.B. DNS 1.1.1.1).<br>• <strong>IN</strong> (Indien): Globales IT/Outsourcing-Zentrum.<br>• <strong>IL</strong> (Israel): Cybersicherheits-/SaaS-Zentrum.<br>• <strong>EE</strong> (Estland) & <strong>BG</strong> (Bulgarien): Stark in die EU-IT integriert.<br>• <strong>AE</strong> (VAE): Großer AWS/Azure-Knoten für den Nahen Osten.<br><span class='italic text-blue-400/80'>Diese Länder wurden bewusst aus der Standardauswahl ausgeschlossen.</span>",
                 search_ph: "Land in der Liste unten suchen...",
                 btn_sel_all: "Alle auswählen", btn_desel_all: "Alle abwählen",
+                label_countries_short: "Länder ausgewählt",
+                loading_countries: "Länderliste wird geladen...",
                 wan_title: "WAN-Schnittstelle", wan_list: "Interface List (z.B. WAN)", wan_single: "Einzelnes Interface (z.B. ether1)", wan_ph: "Schnittstellen- oder Listenname",
                 opt_title: "Globale Optionen", opt_merge_label: "Verhalten der IP-Listen",
                 opt_replace: "Ersetzen (Löscht alte Liste und erstellt neu, empfohlen)", opt_keep: "Behalten (Behält bestehende, fügt neue IPs hinzu)",
@@ -309,6 +334,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 info_text: "Algunos países alojan infraestructura global. Bloquearlos puede afectar servicios legítimos:<br>• <strong>AU</strong> (Australia): IPs de Cloudflare/APNIC (ej. DNS 1.1.1.1).<br>• <strong>IN</strong> (India): Centro global de TI y outsourcing.<br>• <strong>IL</strong> (Israel): Centro de Ciberseguridad y SaaS.<br>• <strong>EE</strong> (Estonia) & <strong>BG</strong> (Bulgaria): Muy integrados en la TI de la UE.<br>• <strong>AE</strong> (Emiratos): Gran nodo AWS/Azure para Medio Oriente.<br><span class='italic text-blue-400/80'>Estos países han sido excluidos deliberadamente de la selección por defecto.</span>",
                 search_ph: "Buscar un país en la lista de abajo...",
                 btn_sel_all: "Seleccionar todo", btn_desel_all: "Deseleccionar todo",
+                label_countries_short: "países seleccionados",
+                loading_countries: "Cargando lista de países...",
                 wan_title: "Interfaz WAN", wan_list: "Interface List (ej. WAN)", wan_single: "Interfaz única (ej. ether1)", wan_ph: "Nombre de interfaz o lista",
                 opt_title: "Opciones Globales", opt_merge_label: "Comportamiento de listas de IP",
                 opt_replace: "Reemplazar (Elimina lista antigua y recrea, recomendado)", opt_keep: "Mantener (Conserva existente, añade nuevas IPs)",
@@ -332,6 +359,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 info_text: "Некоторые страны размещают глобальную инфраструктуру. Их блокировка может нарушить работу сервисов:<br>• <strong>AU</strong> (Австралия): IP Cloudflare/APNIC (напр. DNS 1.1.1.1).<br>• <strong>IN</strong> (Индия): Глобальный IT-хаб.<br>• <strong>IL</strong> (Израиль): Хаб кибербезопасности и SaaS.<br>• <strong>EE</strong> (Эстония) & <strong>BG</strong> (Болгария): Сильно интегрированы в IT ЕС.<br>• <strong>AE</strong> (ОАЭ): Крупный хаб AWS/Azure для Ближнего Востока.<br><span class='italic text-blue-400/80'>Эти страны намеренно исключены из выбора по умолчанию.</span>",
                 search_ph: "Поиск страны в списке ниже...",
                 btn_sel_all: "Выбрать все", btn_desel_all: "Снять выбор",
+                label_countries_short: "стран выбрано",
+                loading_countries: "Загрузка списка стран...",
                 wan_title: "WAN Интерфейс", wan_list: "Список интерфейсов (напр. WAN)", wan_single: "Одиночный интерфейс (напр. ether1)", wan_ph: "Имя интерфейса или списка",
                 opt_title: "Глобальные параметры", opt_merge_label: "Поведение списков IP",
                 opt_replace: "Заменить (Удаляет старый и создает новый, рекомендуется)", opt_keep: "Оставить (Сохраняет существующий, добавляет новые IP)",
@@ -355,6 +384,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 info_text: "一些国家托管着全球基础设施。阻止它们可能会破坏合法服务：<br>• <strong>AU</strong> (澳大利亚)：托管 Cloudflare/APNIC IP（如 DNS 1.1.1.1）。<br>• <strong>IN</strong> (印度)：全球 IT 和外包中心。<br>• <strong>IL</strong> (以色列)：全球网络安全和 SaaS 中心。<br>• <strong>EE</strong> (爱沙尼亚) & <strong>BG</strong> (保加利亚)：高度融入欧盟 IT。<br>• <strong>AE</strong> (阿联酋)：中东的主要 AWS/Azure 中心。<br><span class='italic text-blue-400/80'>这些国家/地区已从默认选择中故意排除。</span>",
                 search_ph: "在下面的列表中搜索国家...",
                 btn_sel_all: "全选", btn_desel_all: "取消全选",
+                label_countries_short: "个国家被选中",
+                loading_countries: "正在加载国家列表...",
                 wan_title: "WAN 接口", wan_list: "接口列表 (如: WAN)", wan_single: "单一接口 (如: ether1)", wan_ph: "接口或列表名称",
                 opt_title: "全局选项", opt_merge_label: "IP 列表行为",
                 opt_replace: "替换 (删除旧列表并重新创建，推荐)", opt_keep: "保留 (保留现有列表，追加新 IP)",
@@ -413,31 +444,112 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             ru: ["af","dz","ad","ao","ag","ar","bh","bd","bj","bt","bo","bw","br","bn","bf","bi","kh","cm","cv","cf","td","cl","cn","co","ci","cu","cy","cd","dj","do","ec","eg","sv","gq","er","sz","et","fj","ga","gm","ge","gh","gr","gt","gn","gw","gy","hk","id","ir","iq","jo","ke","kw","la","lb","ls","lr","ly","mg","mw","ml","mr","mu","mx","mn","ma","mz","mm","na","np","ni","ne","ng","kp","om","pk","pa","py","pe","ph","qa","cg","rw","sa","sn","sl","so","za","ss","lk","sd","sr","sy","tz","tg","tn","ug","uy","ve","vn","ye","zm","zw"]
         };
 
-        const countriesDict = { "ad":"Andorra", "ae":"United Arab Emirates", "af":"Afghanistan", "ag":"Antigua and Barbuda", "al":"Albania", "am":"Armenia", "ao":"Angola", "ar":"Argentina", "at":"Austria", "au":"Australia", "az":"Azerbaijan", "ba":"Bosnia and Herzegovina", "bb":"Barbados", "bd":"Bangladesh", "be":"Belgium", "bf":"Burkina Faso", "bg":"Bulgaria", "bh":"Bahrain", "bi":"Burundi", "bj":"Benin", "bn":"Brunei", "bo":"Bolivia", "br":"Brazil", "bs":"Bahamas", "bt":"Bhutan", "bw":"Botswana", "by":"Belarus", "bz":"Belize", "ca":"Canada", "cd":"Democratic Republic of the Congo", "cf":"Central African Republic", "cg":"Republic of the Congo", "ch":"Switzerland", "ci":"Cote d'Ivoire", "cl":"Chile", "cm":"Cameroon", "cn":"China", "co":"Colombia", "cr":"Costa Rica", "cu":"Cuba", "cv":"Cape Verde", "cy":"Cyprus", "cz":"Czechia", "de":"Germany", "dj":"Djibouti", "dk":"Denmark", "dm":"Dominica", "do":"Dominican Republic", "dz":"Algeria", "ec":"Ecuador", "ee":"Estonia", "eg":"Egypt", "er":"Eritrea", "es":"Spain", "et":"Ethiopia", "fi":"Finland", "fj":"Fiji", "fr":"France", "ga":"Gabon", "gb":"United Kingdom", "ge":"Georgia", "gh":"Ghana", "gm":"Gambia", "gn":"Guinea", "gq":"Equatorial Guinea", "gr":"Greece", "gt":"Guatemala", "gw":"Guinea-Bissau", "gy":"Guyana", "hk":"Hong Kong", "hn":"Honduras", "hr":"Croatia", "ht":"Haiti", "hu":"Hungary", "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "iq":"Iraq", "ir":"Iran", "is":"Iceland", "it":"Italy", "jm":"Jamaica", "jo":"Jordan", "jp":"Japan", "ke":"Kenya", "kg":"Kyrgyzstan", "kh":"Cambodia", "kp":"North Korea", "kr":"South Korea", "kw":"Kuwait", "kz":"Kazakhstan", "la":"Laos", "lb":"Lebanon", "lk":"Sri Lanka", "lr":"Liberia", "ls":"Lesotho", "lt":"Lithuania", "lu":"Luxembourg", "lv":"Latvia", "ly":"Libya", "ma":"Morocco", "md":"Moldova", "me":"Montenegro", "mg":"Madagascar", "mk":"North Macedonia", "ml":"Mali", "mm":"Myanmar", "mn":"Mongolia", "mr":"Mauritania", "mt":"Malta", "mu":"Mauritius", "mv":"Maldives", "mw":"Malawi", "mx":"Mexico", "my":"Malaysia", "mz":"Mozambique", "na":"Namibia", "ne":"Niger", "ng":"Nigeria", "ni":"Nicaragua", "nl":"Netherlands", "no":"Norway", "np":"Nepal", "nz":"New Zealand", "om":"Oman", "pa":"Panama", "pe":"Peru", "ph":"Philippines", "pk":"Pakistan", "pl":"Poland", "pt":"Portugal", "py":"Paraguay", "qa":"Qatar", "ro":"Romania", "rs":"Serbia", "ru":"Russia", "rw":"Rwanda", "sa":"Saudi Arabia", "sd":"Sudan", "se":"Sweden", "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "sl":"Sierra Leone", "sn":"Senegal", "so":"Somalia", "sr":"Suriname", "ss":"South Sudan", "sv":"El Salvador", "sy":"Syria", "sz":"Eswatini", "td":"Chad", "tg":"Togo", "th":"Thailand", "tj":"Tajikistan", "tm":"Turkmenistan", "tn":"Tunisia", "tr":"Turkey", "tt":"Trinidad and Tobago", "tw":"Taiwan", "tz":"Tanzania", "ua":"Ukraine", "ug":"Uganda", "us":"United States", "uy":"Uruguay", "uz":"Uzbekistan", "ve":"Venezuela", "vn":"Vietnam", "ye":"Yemen", "za":"South Africa", "zm":"Zambia", "zw":"Zimbabwe" };
+        const countriesDict = {
+            "ad":"Andorra", "ae":"United Arab Emirates", "af":"Afghanistan", "ag":"Antigua and Barbuda", "al":"Albania",
+            "am":"Armenia", "ao":"Angola", "ar":"Argentina", "at":"Austria", "au":"Australia", "az":"Azerbaijan",
+            "ba":"Bosnia and Herzegovina", "bb":"Barbados", "bd":"Bangladesh", "be":"Belgium", "bf":"Burkina Faso",
+            "bg":"Bulgaria", "bh":"Bahrain", "bi":"Burundi", "bj":"Benin", "bn":"Brunei", "bo":"Bolivia",
+            "br":"Brazil", "bs":"Bahamas", "bt":"Bhutan", "bw":"Botswana", "by":"Belarus", "bz":"Belize", "ca":"Canada",
+            "cd":"Democratic Republic of the Congo", "cf":"Central African Republic", "cg":"Republic of the Congo",
+            "ch":"Switzerland", "ci":"Cote d'Ivoire", "cl":"Chile", "cm":"Cameroon", "cn":"China", "co":"Colombia",
+            "cr":"Costa Rica", "cu":"Cuba", "cv":"Cape Verde", "cy":"Cyprus", "cz":"Czechia", "de":"Germany",
+            "dj":"Djibouti", "dk":"Denmark", "dm":"Dominica", "do":"Dominican Republic", "dz":"Algeria", "ec":"Ecuador",
+            "ee":"Estonia", "eg":"Egypt", "er":"Eritrea", "es":"Spain", "et":"Ethiopia", "fi":"Finland", "fj":"Fiji",
+            "fr":"France", "ga":"Gabon", "gb":"United Kingdom", "ge":"Georgia", "gh":"Ghana", "gm":"Gambia",
+            "gn":"Guinea", "gq":"Equatorial Guinea", "gr":"Greece", "gt":"Guatemala", "gw":"Guinea-Bissau",
+            "gy":"Guyana", "hk":"Hong Kong", "hn":"Honduras", "hr":"Croatia", "ht":"Haiti", "hu":"Hungary",
+            "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "iq":"Iraq", "ir":"Iran", "is":"Iceland",
+            "it":"Italy", "jm":"Jamaica", "jo":"Jordan", "jp":"Japan", "ke":"Kenya", "kg":"Kyrgyzstan",
+            "kh":"Cambodia", "kp":"North Korea", "kr":"South Korea", "kw":"Kuwait", "kz":"Kazakhstan", "la":"Laos",
+            "lb":"Lebanon", "lk":"Sri Lanka", "lr":"Liberia", "ls":"Lesotho", "lt":"Lithuania", "lu":"Luxembourg",
+            "lv":"Latvia", "ly":"Libya", "ma":"Morocco", "md":"Moldova", "me":"Montenegro", "mg":"Madagascar",
+            "mk":"North Macedonia", "ml":"Mali", "mm":"Myanmar", "mn":"Mongolia", "mr":"Mauritania", "mt":"Malta",
+            "mu":"Mauritius", "mv":"Maldives", "mw":"Malawi", "mx":"Mexico", "my":"Malaysia", "mz":"Mozambique",
+            "na":"Namibia", "ne":"Niger", "ng":"Nigeria", "ni":"Nicaragua", "nl":"Netherlands", "no":"Norway",
+            "np":"Nepal", "nz":"New Zealand", "om":"Oman", "pa":"Panama", "pe":"Peru", "ph":"Philippines",
+            "pk":"Pakistan", "pl":"Poland", "pt":"Portugal", "py":"Paraguay", "qa":"Qatar", "ro":"Romania",
+            "rs":"Serbia", "ru":"Russia", "rw":"Rwanda", "sa":"Saudi Arabia", "sd":"Sudan", "se":"Sweden",
+            "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "sl":"Sierra Leone", "sn":"Senegal", "so":"Somalia",
+            "sr":"Suriname", "ss":"South Sudan", "sv":"El Salvador", "sy":"Syria", "sz":"Eswatini", "td":"Chad",
+            "tg":"Togo", "th":"Thailand", "tj":"Tajikistan", "tm":"Turkmenistan", "tn":"Tunisia", "tr":"Turkey",
+            "tt":"Trinidad and Tobago", "tw":"Taiwan", "tz":"Tanzania", "ua":"Ukraine", "ug":"Uganda",
+            "us":"United States", "uy":"Uruguay", "uz":"Uzbekistan", "ve":"Venezuela", "vn":"Vietnam", "ye":"Yemen",
+            "za":"South Africa", "zm":"Zambia", "zw":"Zimbabwe",
+            // Territoires et pays additionnels utilisés par ipverse
+            "ai":"Anguilla", "as":"American Samoa", "aw":"Aruba", "ax":"Aland Islands",
+            "bq":"Bonaire, Sint Eustatius and Saba", "bl":"Saint Barthelemy", "ck":"Cook Islands",
+            "cw":"Curacao", "fm":"Micronesia", "fk":"Falkland Islands", "fo":"Faroe Islands",
+            "gf":"French Guiana", "gg":"Guernsey", "gi":"Gibraltar", "gl":"Greenland", "gp":"Guadeloupe",
+            "gu":"Guam", "je":"Jersey", "ki":"Kiribati", "km":"Comoros", "kn":"Saint Kitts and Nevis",
+            "ky":"Cayman Islands", "lc":"Saint Lucia", "li":"Liechtenstein", "mc":"Monaco",
+            "mf":"Saint Martin", "mh":"Marshall Islands", "mo":"Macao", "mp":"Northern Mariana Islands",
+            "mq":"Martinique", "ms":"Montserrat", "nc":"New Caledonia", "nf":"Norfolk Island",
+            "nr":"Nauru", "nu":"Niue", "pf":"French Polynesia", "pg":"Papua New Guinea",
+            "pm":"Saint Pierre and Miquelon", "pr":"Puerto Rico", "ps":"Palestine", "pw":"Palau",
+            "re":"Reunion", "sb":"Solomon Islands", "sc":"Seychelles", "sm":"San Marino",
+            "st":"Sao Tome and Principe", "sx":"Sint Maarten", "tc":"Turks and Caicos Islands",
+            "tk":"Tokelau", "tl":"Timor-Leste", "to":"Tonga", "tv":"Tuvalu", "va":"Vatican City",
+            "vc":"Saint Vincent and the Grenadines", "vg":"British Virgin Islands",
+            "vi":"U.S. Virgin Islands", "vu":"Vanuatu", "wf":"Wallis and Futuna", "ws":"Samoa",
+            "yt":"Mayotte"
+        };
         
         let countryCheckboxes = {};
         const container = document.getElementById('country_container');
         const textInput = document.getElementById('selected_codes');
 
-        Object.keys(countriesDict).sort((a,b) => countriesDict[a].localeCompare(countriesDict[b])).forEach(cc => {
-            const name = countriesDict[cc];
-            const div = document.createElement('div');
-            div.className = 'flex items-center p-2 hover:bg-gray-700/50 rounded cursor-pointer transition';
-            
-            div.innerHTML = `
-                <input type="checkbox" id="chk_${cc}" value="${cc}" class="w-4 h-4 text-red-500 bg-gray-900 border-gray-600 rounded focus:ring-red-500 mr-3 pointer-events-none">
-                <img src="https://flagcdn.com/20x15/${cc}.png" class="w-5 mr-2 rounded-sm opacity-80" onerror="this.style.display='none'">
-                <label class="text-sm text-gray-300 flex-1 cursor-pointer select-none">${name} <span class="text-gray-500 ml-1">(${cc.toUpperCase()})</span></label>
-            `;
-            
-            div.onclick = () => { 
-                const cb = document.getElementById(`chk_${cc}`); 
-                cb.checked = !cb.checked; 
-                syncTextFromCheckboxes(); 
-            };
-            container.appendChild(div);
-            countryCheckboxes[cc] = div;
-        });
+        async function loadAvailableCountryCodes() {
+            try {
+                // On demande explicitement suffisamment d'entrées pour couvrir tous les pays
+                const res = await fetch('https://api.github.com/repos/ipverse/country-ip-blocks/contents/country?per_page=300');
+                if (!res.ok) throw new Error('GitHub API error');
+                const data = await res.json();
+                return data
+                    .filter(entry => entry.type === 'dir' && /^[a-z]{2}$/i.test(entry.name))
+                    .map(entry => entry.name.toLowerCase());
+            } catch (e) {
+                // Fallback : on utilise la liste statique intégrée
+                return Object.keys(countriesDict);
+            }
+        }
+
+        async function initCountries() {
+            const codes = await loadAvailableCountryCodes();
+            container.innerHTML = '';
+            countryCheckboxes = {};
+
+            codes
+                .sort((a, b) => {
+                    const nameA = countriesDict[a] || a.toUpperCase();
+                    const nameB = countriesDict[b] || b.toUpperCase();
+                    return nameA.localeCompare(nameB);
+                })
+                .forEach(cc => {
+                    const name = countriesDict[cc] || cc.toUpperCase();
+                    const div = document.createElement('div');
+                    div.className = 'flex items-center p-2 hover:bg-gray-700/50 rounded cursor-pointer transition';
+
+                    div.innerHTML = `
+                        <input type="checkbox" id="chk_${cc}" value="${cc}" class="w-4 h-4 text-red-500 bg-gray-900 border-gray-600 rounded focus:ring-red-500 mr-3 pointer-events-none">
+                        <img src="https://flagcdn.com/20x15/${cc}.png" class="w-5 mr-2 rounded-sm opacity-80" onerror="this.style.display='none'">
+                        <label class="text-sm text-gray-300 flex-1 cursor-pointer select-none">${name} <span class="text-gray-500 ml-1">(${cc.toUpperCase()})</span></label>
+                    `;
+
+                    div.onclick = () => {
+                        const cb = document.getElementById(`chk_${cc}`);
+                        cb.checked = !cb.checked;
+                        syncTextFromCheckboxes();
+                    };
+                    container.appendChild(div);
+                    countryCheckboxes[cc] = div;
+                });
+
+            applyPresetForLang(currentLang);
+
+            // Mettre à jour le compteur total de pays
+            const totalSpan = document.getElementById('country_count_total');
+            if (totalSpan) totalSpan.innerText = Object.keys(countryCheckboxes).length.toString();
+        }
 
         function applyPresetForLang(lang) {
             const preset = presetsByLang[lang];
@@ -456,6 +568,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 if (document.getElementById(`chk_${cc}`).checked) selected.push(cc);
             });
             textInput.value = selected.join(', ');
+
+            const selSpan = document.getElementById('country_count_selected');
+            if (selSpan) selSpan.innerText = selected.length.toString();
         }
 
         textInput.addEventListener('input', (e) => {
@@ -466,13 +581,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             });
         });
 
-        applyPresetForLang(currentLang);
-
         document.getElementById('country_search').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
             Object.keys(countryCheckboxes).forEach(cc => {
                 const div = countryCheckboxes[cc];
-                const name = countriesDict[cc].toLowerCase();
+                const name = (countriesDict[cc] || cc.toUpperCase()).toLowerCase();
                 if (name.includes(term) || cc.includes(term)) div.style.display = 'flex';
                 else div.style.display = 'none';
             });
@@ -509,6 +622,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             document.getElementById('btn_generate').classList.add('opacity-50', 'cursor-not-allowed');
             document.getElementById('progress_area').classList.remove('hidden');
             document.getElementById('prog_log').innerHTML = '';
+            const summaryArea = document.getElementById('summary_area');
+            if (summaryArea) {
+                summaryArea.classList.add('hidden');
+                document.getElementById('summary_line1').innerText = '';
+                document.getElementById('summary_line2').innerText = '';
+                document.getElementById('summary_line3').innerText = '';
+            }
             
             const wanType = document.querySelector('input[name="wan_type"]:checked').value;
             const wanName = document.getElementById('wan_name').value.trim() || 'WAN';
@@ -525,12 +645,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 return;
             }
 
+            // On se base toujours sur les pays effectivement affichés (countryCheckboxes)
             const blockSet = [];
-            Object.keys(countriesDict).forEach(cc => {
+            const allAvailable = Object.keys(countryCheckboxes);
+            allAvailable.forEach(cc => {
                 if (document.getElementById(`chk_${cc}`).checked) blockSet.push(cc);
             });
 
-            const obsSet = doObserve ? Object.keys(countriesDict).filter(cc => !blockSet.includes(cc)) : [];
+            const obsSet = doObserve ? allAvailable.filter(cc => !blockSet.includes(cc)) : [];
             const totalTasks = blockSet.length + obsSet.length;
 
             logProgress(`${t('log_start')}${wanType} "${wanName}"${t('log_mode')}${mode}`);
@@ -551,11 +673,12 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             }
 
             let processed = 0;
+            let totalBlockV4 = 0, totalBlockV6 = 0, totalObsV4 = 0, totalObsV6 = 0;
             const groups = [{ type: 'BLOCK', list: blockSet }, { type: 'OBSERVE', list: obsSet }];
 
             for (const group of groups) {
                 for (const cc of group.list) {
-                    const cname = countriesDict[cc].toUpperCase();
+                    const cname = (countriesDict[cc] || cc.toUpperCase()).toUpperCase();
                     document.getElementById('prog_status').innerText = `${t('log_dl')}${cname}...`;
                     const v4 = useIPv4 ? await fetchPrefixes(cc, 'ipv4') : [];
                     const v6 = useIPv6 ? await fetchPrefixes(cc, 'ipv6') : [];
@@ -592,6 +715,14 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                         rsc += "\n";
                     }
 
+                    if (group.type === 'BLOCK') {
+                        totalBlockV4 += v4.length;
+                        totalBlockV6 += v6.length;
+                    } else {
+                        totalObsV4 += v4.length;
+                        totalObsV6 += v6.length;
+                    }
+
                     processed++;
                     const pct = Math.round((processed / totalTasks) * 100);
                     document.getElementById('prog_percent').innerText = `${pct}%`;
@@ -602,6 +733,18 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             rsc += ":put \"Generated geo policy import done\"\n";
             document.getElementById('prog_status').innerText = t('log_done');
             logProgress(t('log_finish'), "text-blue-400 font-bold");
+
+            // Résumé de génération façon CLI
+            if (summaryArea) {
+                summaryArea.classList.remove('hidden');
+                document.getElementById('summary_line1').innerText =
+                    `WAN: ${wanType}="${wanName}" • Mode listes: ${mode}`;
+                document.getElementById('summary_line2').innerText =
+                    `Pays bloqués: ${blockSet.length} • Pays observés: ${obsSet.length}`;
+                document.getElementById('summary_line3').innerText =
+                    `Préfixes IPv4 — blocage: ${totalBlockV4}, observation: ${totalObsV4} • ` +
+                    `IPv6 — blocage: ${totalBlockV6}, observation: ${totalObsV6}`;
+            }
 
             const blob = new Blob([rsc], { type: 'text/plain' });
             const url = window.URL.createObjectURL(blob);
@@ -620,8 +763,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             }, 2000);
         }
 
-        // Init language on load to replace placeholders and default text cleanly if needed
+        // Init language and pays bloqués par défaut
         changeLang('fr');
+        initCountries();
     </script>
 </body>
 </html>
