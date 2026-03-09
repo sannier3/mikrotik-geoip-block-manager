@@ -1,0 +1,28 @@
+name: Package web GUI PHP files
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  package-web-gui:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare web-gui bundle
+        run: |
+          mkdir -p dist/web-gui
+          cp web-gui/generator.php dist/web-gui/
+          cp web-gui/mikrotik-monitor-default.php dist/web-gui/
+          echo '<?php header("Location: generator.php"); exit;' > dist/web-gui/index.php
+
+      - name: Upload web-gui artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mikrotik-web-gui-php
+          path: dist/web-gui
+

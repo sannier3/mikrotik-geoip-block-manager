@@ -33,9 +33,9 @@
 
 ### 第 1 步：生成过滤脚本
 
-1. 将 `web-gui` 文件夹上传到您的 Web 服务器。
-2. 通过浏览器访问 `generator.php`。
-3. 选择您的 WAN 接口和要阻止的国家。
+1. **在线方式：** 使用[托管生成器](https://jbsan.fr/mikrotik-geo-counrty-generator.php)无需安装即可生成文件。
+2. **自托管方式：** 将 `web-gui` 文件夹上传到 Web 服务器，通过浏览器访问 `generator.php`。
+3. 选择 WAN 接口和要阻止的国家。
 4. 点击 **生成 .rsc 脚本**。该工具将从 [ipverse](https://github.com/ipverse/country-ip-blocks) 下载 IP 并编译 MikroTik 语法。
 
 > **💡 硬件说明：** 如果您使用交换机（CRS/CSS 系列）进行软件路由，请限制观察国家的数量以避免 CPU 过载。理想情况下，请使用硬件路由器（CCR、RB、CHR 系列）。

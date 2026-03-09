@@ -36,8 +36,8 @@ Une suite d'outils complète pour générer des règles de blocage géographique
 
 ### Étape 1 : Générer le script de filtrage
 
-1. Uploadez le dossier `web-gui` sur votre serveur web.
-2. Accédez à `generator.php` via votre navigateur.
+1. **Option en ligne :** utilisez le [générateur hébergé](https://jbsan.fr/mikrotik-geo-counrty-generator.php) pour générer le fichier sans rien installer.
+2. **Option self-hosted :** uploadez le dossier `web-gui` sur votre serveur web et accédez à `generator.php` via votre navigateur.
 3. Sélectionnez votre interface WAN et les pays à bloquer.
 4. Cliquez sur **Générer le Script .rsc**. L'outil téléchargera les IP depuis [ipverse](https://github.com/ipverse/country-ip-blocks) et compilera la syntaxe MikroTik.
 

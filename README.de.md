@@ -33,8 +33,8 @@ Ein umfassendes Toolkit zur Generierung von Geo-IP-Blockierregeln für MikroTik-
 
 ### Schritt 1: Filter-Skript generieren
 
-1. Laden Sie den Ordner `web-gui` auf Ihren Webserver hoch.
-2. Rufen Sie `generator.php` über Ihren Browser auf.
+1. **Online-Option:** Nutzen Sie den [gehosteten Generator](https://jbsan.fr/mikrotik-geo-counrty-generator.php), um die Datei ohne Installation zu erzeugen.
+2. **Eigenes Hosting:** Laden Sie den Ordner `web-gui` auf Ihren Webserver hoch und rufen Sie `generator.php` im Browser auf.
 3. Wählen Sie Ihre WAN-Schnittstelle und die zu blockierenden Länder aus.
 4. Klicken Sie auf **.rsc Skript generieren**. Das Tool lädt die IPs von [ipverse](https://github.com/ipverse/country-ip-blocks) herunter und kompiliert die MikroTik-Syntax.
 
