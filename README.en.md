@@ -71,6 +71,11 @@ Blocking "everyone except your country" is often a bad idea. By default, the gen
 * **AE (UAE):** Major AWS / Azure nodes.
 * **EE (Estonia) & BG (Bulgaria):** Highly integrated into European IT.
 
+## 🔗 Useful Links
+
+* **Online generator**: [MikroTik Geo-Policy Generator (hosted)](https://jbsan.fr/mikrotik-geo-counrty-generator.php)
+* **GitHub project**: [sannier3/mikrotik-geoip-block-manager](https://github.com/sannier3/mikrotik-geoip-block-manager)
+
 ## 🤝 Credits
 
 * IP lists maintained by the [ipverse/country-ip-blocks](https://github.com/ipverse/country-ip-blocks) project.

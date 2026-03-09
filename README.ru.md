@@ -72,6 +72,11 @@ $USE_HTTPS = false;      // Установите true, если использу
 * **AE (ОАЭ):** Крупные узлы AWS / Azure.
 * **EE (Эстония) и BG (Болгария):** Сильно интегрированы в европейскую IT-инфраструктуру.
 
+## 🔗 Полезные ссылки
+
+* **Онлайн-генератор**: [MikroTik Geo-Policy Generator (хостинг)](https://jbsan.fr/mikrotik-geo-counrty-generator.php)
+* **Проект на GitHub**: [sannier3/mikrotik-geoip-block-manager](https://github.com/sannier3/mikrotik-geoip-block-manager)
+
 ## 🤝 Благодарности
 
 * Списки IP поддерживаются проектом [ipverse/country-ip-blocks](https://github.com/ipverse/country-ip-blocks).

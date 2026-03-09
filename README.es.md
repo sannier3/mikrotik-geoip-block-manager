@@ -72,6 +72,11 @@ Bloquear "a todo el mundo excepto a tu país" suele ser una mala idea. Por defec
 * **AE (Emiratos Árabes Unidos):** Nodos principales de AWS / Azure.
 * **EE (Estonia) y BG (Bulgaria):** Fuertemente integrados en la TI europea.
 
+## 🔗 Enlaces útiles
+
+* **Generador en línea**: [MikroTik Geo-Policy Generator (hospedado)](https://jbsan.fr/mikrotik-geo-counrty-generator.php)
+* **Proyecto GitHub**: [sannier3/mikrotik-geoip-block-manager](https://github.com/sannier3/mikrotik-geoip-block-manager)
+
 ## 🤝 Créditos
 
 * Listas de IP mantenidas por el proyecto [ipverse/country-ip-blocks](https://github.com/ipverse/country-ip-blocks).

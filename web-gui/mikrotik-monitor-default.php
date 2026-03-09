@@ -110,7 +110,13 @@ if (isset($_GET['fetch_data'])) {
 </head>
 <body class="p-6 relative">
 
-    <div class="absolute top-4 right-6 z-10">
+    <div class="absolute top-4 right-6 z-10 flex items-center gap-3">
+        <a href="https://github.com/sannier3/mikrotik-geoip-block-manager" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-600 bg-gray-800 text-xs text-gray-200 hover:bg-gray-700 hover:border-blue-500 transition shadow-lg">
+            <svg class="w-4 h-4 mr-1.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.49 7.49 0 0 1 2-.27 7.49 7.49 0 0 1 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path>
+            </svg>
+            <span>GitHub</span>
+        </a>
         <select id="lang_selector" onchange="changeLang(this.value)" class="bg-gray-800 border border-gray-600 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 cursor-pointer shadow-lg">
             <option value="fr" selected>🇫🇷 Français</option>
             <option value="en">🇬🇧 English</option>
@@ -209,6 +215,17 @@ if (isset($_GET['fetch_data'])) {
             </div>
         </div>
 
+        <div class="glass-panel p-6 mb-8">
+            <h2 data-i18n="blocked_list_title" class="text-xl font-semibold mb-2 text-white">Pays bloqués — liste à copier</h2>
+            <p data-i18n="blocked_list_desc" class="text-gray-400 text-sm mb-3">Codes pays à deux lettres (séparés par des espaces) pour regénérer la liste de blocage.</p>
+            <div class="flex gap-2 flex-wrap items-start">
+                <textarea id="blocked-countries-copy" readonly class="flex-1 min-w-[200px] min-h-[80px] bg-gray-800/80 border border-gray-600 rounded-lg px-3 py-2 text-sm font-mono text-gray-200 resize-y focus:outline-none focus:border-blue-500" placeholder="—"></textarea>
+                <button type="button" onclick="copyBlockedCountries()" data-i18n="blocked_list_btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg text-white font-medium text-sm whitespace-nowrap transition shadow-lg shadow-blue-500/20">
+                    Copier
+                </button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -220,7 +237,8 @@ if (isset($_GET['fetch_data'])) {
                 map_title: "Densité de Trafic Global", pie_title: "Répartition Protocole", 
                 bar_title: "Top 10 Pays (Bloqués vs Autorisés)", chart_blocked: "Bloqué", chart_obs: "Autorisé",
                 line_title: "Bande Passante en Temps Réel", line_badge: "Mise à jour 5s", line_desc: "Vitesse du trafic traité par les règles (Kbps)",
-                table_title: "Données Détaillées par Pays", th_cc: "Pays", th_b_bytes: "Bloqué (Octets)", th_b_pkts: "Bloqué (Pkt)", th_o_bytes: "Autorisé (Octets)", th_o_pkts: "Autorisé (Pkt)", th_ratio: "Ratio IPv4 / IPv6", th_total: "Total"
+                table_title: "Données Détaillées par Pays", th_cc: "Pays", th_b_bytes: "Bloqué (Octets)", th_b_pkts: "Bloqué (Pkt)", th_o_bytes: "Autorisé (Octets)", th_o_pkts: "Autorisé (Pkt)", th_ratio: "Ratio IPv4 / IPv6", th_total: "Total",
+                blocked_list_title: "Pays bloqués — liste à copier", blocked_list_desc: "Codes pays à deux lettres (séparés par des espaces) pour regénérer la liste de blocage.", blocked_list_btn: "Copier", blocked_list_copied: "Copié"
             },
             en: {
                 subtitle: "MikroTik Global Traffic Analysis (Live 5s)", btn_refresh: "Force Refresh", sync_live: "Live Sync", sync_err: "Sync Error",
@@ -228,7 +246,8 @@ if (isset($_GET['fetch_data'])) {
                 map_title: "Global Traffic Density", pie_title: "Protocol Distribution", 
                 bar_title: "Top 10 Countries (Blocked vs Allowed)", chart_blocked: "Blocked", chart_obs: "Allowed",
                 line_title: "Real-Time Bandwidth", line_badge: "5s Update", line_desc: "Traffic speed processed by rules (Kbps)",
-                table_title: "Detailed Data by Country", th_cc: "Country", th_b_bytes: "Blocked (Bytes)", th_b_pkts: "Blocked (Pkt)", th_o_bytes: "Allowed (Bytes)", th_o_pkts: "Allowed (Pkt)", th_ratio: "IPv4 / IPv6 Ratio", th_total: "Total"
+                table_title: "Detailed Data by Country", th_cc: "Country", th_b_bytes: "Blocked (Bytes)", th_b_pkts: "Blocked (Pkt)", th_o_bytes: "Allowed (Bytes)", th_o_pkts: "Allowed (Pkt)", th_ratio: "IPv4 / IPv6 Ratio", th_total: "Total",
+                blocked_list_title: "Blocked countries — copy list", blocked_list_desc: "Two-letter country codes (space-separated) to regenerate the block list.", blocked_list_btn: "Copy", blocked_list_copied: "Copied"
             },
             de: {
                 subtitle: "MikroTik Globale Verkehrsanalyse (Live 5s)", btn_refresh: "Aktualisieren", sync_live: "Live Sync", sync_err: "Sync Fehler",
@@ -236,7 +255,8 @@ if (isset($_GET['fetch_data'])) {
                 map_title: "Globale Verkehrsdichte", pie_title: "Protokollverteilung", 
                 bar_title: "Top 10 Länder (Blockiert vs Erlaubt)", chart_blocked: "Blockiert", chart_obs: "Erlaubt",
                 line_title: "Echtzeit-Bandbreite", line_badge: "5s Update", line_desc: "Verarbeitete Verkehrsgeschwindigkeit (Kbps)",
-                table_title: "Detaillierte Daten nach Land", th_cc: "Land", th_b_bytes: "Blockiert (Bytes)", th_b_pkts: "Blockiert (Pkt)", th_o_bytes: "Erlaubt (Bytes)", th_o_pkts: "Erlaubt (Pkt)", th_ratio: "IPv4 / IPv6 Verhältnis", th_total: "Gesamt"
+                table_title: "Detaillierte Daten nach Land", th_cc: "Land", th_b_bytes: "Blockiert (Bytes)", th_b_pkts: "Blockiert (Pkt)", th_o_bytes: "Erlaubt (Bytes)", th_o_pkts: "Erlaubt (Pkt)", th_ratio: "IPv4 / IPv6 Verhältnis", th_total: "Gesamt",
+                blocked_list_title: "Blockierte Länder — Liste zum Kopieren", blocked_list_desc: "Zweibuchstaben-Ländercodes (durch Leerzeichen getrennt) zum Neuerstellen der Blockliste.", blocked_list_btn: "Kopieren", blocked_list_copied: "Kopiert"
             },
             es: {
                 subtitle: "Análisis de tráfico global MikroTik (En vivo 5s)", btn_refresh: "Actualizar", sync_live: "Sincronizado", sync_err: "Error Sync",
@@ -244,7 +264,8 @@ if (isset($_GET['fetch_data'])) {
                 map_title: "Densidad de Tráfico Global", pie_title: "Distribución de Protocolo", 
                 bar_title: "Top 10 Países (Bloqueados vs Permitidos)", chart_blocked: "Bloqueado", chart_obs: "Permitido",
                 line_title: "Ancho de Banda en Tiempo Real", line_badge: "Actualización 5s", line_desc: "Velocidad de tráfico procesado por reglas (Kbps)",
-                table_title: "Datos Detallados por País", th_cc: "País", th_b_bytes: "Bloqueado (Bytes)", th_b_pkts: "Bloqueado (Pkt)", th_o_bytes: "Permitido (Bytes)", th_o_pkts: "Permitido (Pkt)", th_ratio: "Ratio IPv4 / IPv6", th_total: "Total"
+                table_title: "Datos Detallados por País", th_cc: "País", th_b_bytes: "Bloqueado (Bytes)", th_b_pkts: "Bloqueado (Pkt)", th_o_bytes: "Permitido (Bytes)", th_o_pkts: "Permitido (Pkt)", th_ratio: "Ratio IPv4 / IPv6", th_total: "Total",
+                blocked_list_title: "Países bloqueados — lista para copiar", blocked_list_desc: "Códigos de país de dos letras (separados por espacios) para regenerar la lista de bloqueo.", blocked_list_btn: "Copiar", blocked_list_copied: "Copiado"
             },
             ru: {
                 subtitle: "Глобальный анализ трафика MikroTik (Live 5s)", btn_refresh: "Обновить", sync_live: "Синхр.", sync_err: "Ошибка Синхр.",
@@ -252,7 +273,8 @@ if (isset($_GET['fetch_data'])) {
                 map_title: "Глобальная плотность трафика", pie_title: "Распределение протоколов", 
                 bar_title: "Топ 10 стран (Блок. vs Разреш.)", chart_blocked: "Заблокировано", chart_obs: "Разрешено",
                 line_title: "Пропускная способность онлайн", line_badge: "Обновление 5с", line_desc: "Скорость обработки трафика правилами (Кбит/с)",
-                table_title: "Подробные данные по странам", th_cc: "Страна", th_b_bytes: "Заблок. (Байт)", th_b_pkts: "Заблок. (Пакеты)", th_o_bytes: "Разреш. (Байт)", th_o_pkts: "Разреш. (Пакеты)", th_ratio: "Соотношение IPv4/IPv6", th_total: "Итого"
+                table_title: "Подробные данные по странам", th_cc: "Страна", th_b_bytes: "Заблок. (Байт)", th_b_pkts: "Заблок. (Пакеты)", th_o_bytes: "Разреш. (Байт)", th_o_pkts: "Разреш. (Пакеты)", th_ratio: "Соотношение IPv4/IPv6", th_total: "Итого",
+                blocked_list_title: "Заблокированные страны — список для копирования", blocked_list_desc: "Двухбуквенные коды стран (через пробел) для пересоздания списка блокировки.", blocked_list_btn: "Копировать", blocked_list_copied: "Скопировано"
             },
             zh: {
                 subtitle: "MikroTik 全球流量分析 (实时 5 秒)", btn_refresh: "强制刷新", sync_live: "实时同步", sync_err: "同步错误",
@@ -260,7 +282,8 @@ if (isset($_GET['fetch_data'])) {
                 map_title: "全球流量密度", pie_title: "协议分布", 
                 bar_title: "前 10 个国家 (阻止 vs 允许)", chart_blocked: "已阻止", chart_obs: "已允许",
                 line_title: "实时带宽", line_badge: "5秒更新", line_desc: "规则处理的流量速度 (Kbps)",
-                table_title: "按国家分类的详细数据", th_cc: "国家", th_b_bytes: "阻止 (字节)", th_b_pkts: "阻止 (包)", th_o_bytes: "允许 (字节)", th_o_pkts: "允许 (包)", th_ratio: "IPv4 / IPv6 比例", th_total: "总计"
+                table_title: "按国家分类的详细数据", th_cc: "国家", th_b_bytes: "阻止 (字节)", th_b_pkts: "阻止 (包)", th_o_bytes: "允许 (字节)", th_o_pkts: "允许 (包)", th_ratio: "IPv4 / IPv6 比例", th_total: "总计",
+                blocked_list_title: "已阻止国家 — 可复制列表", blocked_list_desc: "两字母国家代码（空格分隔）用于重新生成阻止列表。", blocked_list_btn: "复制", blocked_list_copied: "已复制"
             }
         };
 
@@ -362,6 +385,25 @@ if (isset($_GET['fetch_data'])) {
             lastTimestamp = currentTimestamp; lastTotalBlockedBytes = totalBlockedBytes; lastTotalObservedBytes = totalObservedBytes;
 
             drawProtocolChart(totalV4, totalV6); drawTopCountriesChart(countryList); drawMap(mapData); updateTable(countryList);
+
+            // Liste des pays bloqués (codes 2 lettres, séparés par espaces) pour copier / regénérer la liste
+            let blockedCodes = countryList.filter(c => c.blockedBytes > 0).map(c => c.cc).sort();
+            const blockedTextarea = document.getElementById('blocked-countries-copy');
+            if (blockedTextarea) {
+                blockedTextarea.value = blockedCodes.join(' ');
+            }
+        }
+
+        function copyBlockedCountries() {
+            const el = document.getElementById('blocked-countries-copy');
+            if (!el) return;
+            el.select();
+            el.setSelectionRange(0, 99999);
+            try {
+                navigator.clipboard.writeText(el.value);
+                const btn = document.querySelector('[onclick="copyBlockedCountries()"]');
+                if (btn) { const t0 = btn.textContent; btn.textContent = '✓ ' + t('blocked_list_copied'); setTimeout(() => { btn.textContent = t0; }, 1500); }
+            } catch (e) { /* ignore */ }
         }
 
         function drawProtocolChart(v4, v6) {

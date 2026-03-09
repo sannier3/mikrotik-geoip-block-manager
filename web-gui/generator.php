@@ -52,7 +52,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
 </head>
 <body class="p-6 relative">
     
-    <div class="absolute top-4 right-6 z-10">
+    <div class="absolute top-4 right-6 z-10 flex items-center gap-3">
+        <a href="https://github.com/sannier3/mikrotik-geoip-block-manager" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg border border-gray-600 bg-gray-800 text-xs text-gray-200 hover:bg-gray-700 hover:border-blue-500 transition shadow-lg">
+            <svg class="w-4 h-4 mr-1.5" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.49 7.49 0 0 1 2-.27 7.49 7.49 0 0 1 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path>
+            </svg>
+            <span>GitHub</span>
+        </a>
         <select id="lang_selector" onchange="changeLang(this.value)" class="bg-gray-800 border border-gray-600 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-blue-500 cursor-pointer shadow-lg">
             <option value="fr" selected>🇫🇷 Français</option>
             <option value="en">🇬🇧 English</option>
@@ -136,6 +142,20 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                             <option value="replace" data-i18n="opt_replace" selected>Replace (Supprime l'ancienne liste et recrée, recommandé)</option>
                             <option value="keep" data-i18n="opt_keep">Keep (Conserve l'existant, ajoute les nouvelles IP)</option>
                         </select>
+                    </div>
+
+                    <div class="mb-5">
+                        <label class="block text-sm font-medium text-gray-300 mb-2" data-i18n="opt_family_label">Familles IP à inclure</label>
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="use_ipv4" checked class="w-5 h-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500">
+                                <span class="text-sm text-gray-300" data-i18n="opt_ipv4">IPv4 (recommandé)</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer">
+                                <input type="checkbox" id="use_ipv6" class="w-5 h-5 text-blue-600 bg-gray-800 border-gray-600 rounded focus:ring-blue-500">
+                                <span class="text-sm text-gray-300" data-i18n="opt_ipv6">IPv6 (à activer si besoin)</span>
+                            </label>
+                        </div>
                     </div>
 
                     <div class="space-y-4">
@@ -223,6 +243,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 wan_title: "Interface WAN", wan_list: "Interface List (ex: WAN)", wan_single: "Interface simple (ex: ether1)", wan_ph: "Nom de l'interface ou liste",
                 opt_title: "Options Globales", opt_merge_label: "Comportement des Listes d'IP",
                 opt_replace: "Replace (Supprime l'ancienne liste et recrée, recommandé)", opt_keep: "Keep (Conserve l'existant, ajoute les nouvelles IP)",
+                opt_family_label: "Familles IP à inclure",
+                opt_ipv4: "IPv4 (recommandé)",
+                opt_ipv6: "IPv6 (à activer si besoin)",
                 opt_obs: "Observer tous les autres pays", opt_obs_desc: "Crée des règles 'Mangle Passthrough' pour comptabiliser le trafic légitime dans le Dashboard.",
                 opt_purge: "Purger les anciennes règles Firewall", opt_purge_desc: "Supprime les anciennes règles Mangle/Raw commençant par 'geo-' avant d'appliquer les nouvelles.",
                 alert_title: "Alerte Performance Matérielle", alert_text: "Si vous utilisez un Switch (série CRS/CSS) pour du routage logiciel, cocher 'Observer tous les pays' risque de saturer le CPU. Privilégiez un routeur matériel (CCR, RB, CHR).",
@@ -230,7 +253,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 deploy_title: "Déploiement", deploy_btn: "Fichier Dashboard PHP",
                 deploy_1: "1. Transférez <code>geo-policy.rsc</code> sur votre MikroTik via Winbox.",
                 deploy_2: "2. Ouvrez le terminal. <strong>Attention : le chemin d'importation dépend de votre support de stockage (ex: flash/, disk1/, ou usb1/).</strong> Utilisez <code>verbose=yes</code> pour éviter un échec silencieux :",
-                log_start: "Démarrage. WAN=", log_block: "Pays à bloquer : ", log_obs: " Pays à observer : ", log_purge: "Ajout des commandes de purge des anciennes règles...", log_dl: "Téléchargement : ", log_done: "Terminé ! Téléchargement en cours...", log_finish: "Génération terminée. Création du fichier rsc.", log_ready: "Prêt."
+                log_start: "Démarrage. WAN=", log_block: "Pays à bloquer : ", log_obs: " Pays à observer : ", log_purge: "Ajout des commandes de purge des anciennes règles...", log_dl: "Téléchargement : ", log_done: "Terminé ! Téléchargement en cours...", log_finish: "Génération terminée. Création du fichier rsc.", log_ready: "Prêt.", log_mode: " • Mode listes: "
             },
             en: {
                 subtitle: "Client-side processing • Source IPs by country:",
@@ -243,6 +266,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 wan_title: "WAN Interface", wan_list: "Interface List (e.g. WAN)", wan_single: "Single Interface (e.g. ether1)", wan_ph: "Interface or list name",
                 opt_title: "Global Options", opt_merge_label: "IP Lists Behavior",
                 opt_replace: "Replace (Deletes old list and recreates, recommended)", opt_keep: "Keep (Keeps existing, appends new IPs)",
+                opt_family_label: "IP families to include",
+                opt_ipv4: "IPv4 (recommended)",
+                opt_ipv6: "IPv6 (enable if needed)",
                 opt_obs: "Observe all other countries", opt_obs_desc: "Creates 'Mangle Passthrough' rules to count legitimate traffic in the Dashboard.",
                 opt_purge: "Purge old Firewall rules", opt_purge_desc: "Deletes old Mangle/Raw rules starting with 'geo-' before applying new ones.",
                 alert_title: "Hardware Performance Alert", alert_text: "If you use a Switch (CRS/CSS series) for software routing, checking 'Observe all countries' may max out CPU. Use a hardware router (CCR, RB, CHR).",
@@ -250,7 +276,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 deploy_title: "Deployment", deploy_btn: "Dashboard PHP File",
                 deploy_1: "1. Transfer <code>geo-policy.rsc</code> to your MikroTik via Winbox.",
                 deploy_2: "2. Open the terminal. <strong>Warning: import path depends on your storage (e.g. flash/, disk1/, usb1/).</strong> Use <code>verbose=yes</code> to prevent silent failures:",
-                log_start: "Starting. WAN=", log_block: "Countries to block: ", log_obs: " Countries to observe: ", log_purge: "Adding purge commands for old rules...", log_dl: "Downloading: ", log_done: "Done! Downloading file...", log_finish: "Generation complete. .rsc file created.", log_ready: "Ready."
+                log_start: "Starting. WAN=", log_block: "Countries to block: ", log_obs: " Countries to observe: ", log_purge: "Adding purge commands for old rules...", log_dl: "Downloading: ", log_done: "Done! Downloading file...", log_finish: "Generation complete. .rsc file created.", log_ready: "Ready.", log_mode: " • List mode: "
             },
             de: {
                 subtitle: "Client-seitige Verarbeitung • Quell-IPs nach Land:",
@@ -263,6 +289,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 wan_title: "WAN-Schnittstelle", wan_list: "Interface List (z.B. WAN)", wan_single: "Einzelnes Interface (z.B. ether1)", wan_ph: "Schnittstellen- oder Listenname",
                 opt_title: "Globale Optionen", opt_merge_label: "Verhalten der IP-Listen",
                 opt_replace: "Ersetzen (Löscht alte Liste und erstellt neu, empfohlen)", opt_keep: "Behalten (Behält bestehende, fügt neue IPs hinzu)",
+                opt_family_label: "Einzubeziehende IP-Familien",
+                opt_ipv4: "IPv4 (empfohlen)",
+                opt_ipv6: "IPv6 (bei Bedarf aktivieren)",
                 opt_obs: "Alle anderen Länder beobachten", opt_obs_desc: "Erstellt 'Mangle Passthrough'-Regeln, um legitimen Verkehr im Dashboard zu zählen.",
                 opt_purge: "Alte Firewall-Regeln bereinigen", opt_purge_desc: "Löscht alte Mangle/Raw-Regeln, die mit 'geo-' beginnen, bevor neue angewendet werden.",
                 alert_title: "Hardware-Leistungswarnung", alert_text: "Wenn Sie einen Switch (CRS/CSS-Serie) für Software-Routing verwenden, kann 'Alle Länder beobachten' die CPU auslasten. Verwenden Sie einen Hardware-Router (CCR, RB, CHR).",
@@ -270,7 +299,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 deploy_title: "Bereitstellung", deploy_btn: "Dashboard PHP-Datei",
                 deploy_1: "1. Übertragen Sie <code>geo-policy.rsc</code> über Winbox auf Ihren MikroTik.",
                 deploy_2: "2. Öffnen Sie das Terminal. <strong>Achtung: Der Importpfad hängt vom Speicher ab (z.B. flash/, disk1/).</strong> Verwenden Sie <code>verbose=yes</code>:",
-                log_start: "Start. WAN=", log_block: "Zu blockierende Länder: ", log_obs: " Zu beobachtende Länder: ", log_purge: "Löschbefehle für alte Regeln hinzugefügt...", log_dl: "Herunterladen: ", log_done: "Fertig! Datei wird heruntergeladen...", log_finish: "Generierung abgeschlossen. .rsc-Datei erstellt.", log_ready: "Bereit."
+                log_start: "Start. WAN=", log_block: "Zu blockierende Länder: ", log_obs: " Zu beobachtende Länder: ", log_purge: "Löschbefehle für alte Regeln hinzugefügt...", log_dl: "Herunterladen: ", log_done: "Fertig! Datei wird heruntergeladen...", log_finish: "Generierung abgeschlossen. .rsc-Datei erstellt.", log_ready: "Bereit.", log_mode: " • Listenmodus: "
             },
             es: {
                 subtitle: "Procesamiento en el cliente • IPs de origen por país:",
@@ -283,6 +312,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 wan_title: "Interfaz WAN", wan_list: "Interface List (ej. WAN)", wan_single: "Interfaz única (ej. ether1)", wan_ph: "Nombre de interfaz o lista",
                 opt_title: "Opciones Globales", opt_merge_label: "Comportamiento de listas de IP",
                 opt_replace: "Reemplazar (Elimina lista antigua y recrea, recomendado)", opt_keep: "Mantener (Conserva existente, añade nuevas IPs)",
+                opt_family_label: "Familias IP a incluir",
+                opt_ipv4: "IPv4 (recomendado)",
+                opt_ipv6: "IPv6 (activar si es necesario)",
                 opt_obs: "Observar todos los demás países", opt_obs_desc: "Crea reglas 'Mangle Passthrough' para contar el tráfico legítimo en el Dashboard.",
                 opt_purge: "Purgar reglas antiguas de Firewall", opt_purge_desc: "Elimina reglas antiguas Mangle/Raw que empiezan por 'geo-' antes de aplicar las nuevas.",
                 alert_title: "Alerta de rendimiento de hardware", alert_text: "Si usas un Switch (serie CRS/CSS) para enrutamiento por software, marcar 'Observar todos los países' puede saturar la CPU. Usa un router por hardware (CCR, RB, CHR).",
@@ -290,7 +322,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 deploy_title: "Despliegue", deploy_btn: "Archivo Dashboard PHP",
                 deploy_1: "1. Transfiere <code>geo-policy.rsc</code> a tu MikroTik vía Winbox.",
                 deploy_2: "2. Abre la terminal. <strong>Atención: la ruta de importación depende de tu almacenamiento (ej. flash/, disk1/).</strong> Usa <code>verbose=yes</code> para evitar fallos silenciosos:",
-                log_start: "Iniciando. WAN=", log_block: "Países a bloquear: ", log_obs: " Países a observar: ", log_purge: "Añadiendo comandos de purga de reglas antiguas...", log_dl: "Descargando: ", log_done: "¡Hecho! Descargando archivo...", log_finish: "Generación completa. Archivo .rsc creado.", log_ready: "Listo."
+                log_start: "Iniciando. WAN=", log_block: "Países a bloquear: ", log_obs: " Países a observar: ", log_purge: "Añadiendo comandos de purga de reglas antiguas...", log_dl: "Descargando: ", log_done: "¡Hecho! Descargando archivo...", log_finish: "Generación completa. Archivo .rsc creado.", log_ready: "Listo.", log_mode: " • Modo de listas: "
             },
             ru: {
                 subtitle: "Обработка на стороне клиента • IP-адреса по странам:",
@@ -303,6 +335,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 wan_title: "WAN Интерфейс", wan_list: "Список интерфейсов (напр. WAN)", wan_single: "Одиночный интерфейс (напр. ether1)", wan_ph: "Имя интерфейса или списка",
                 opt_title: "Глобальные параметры", opt_merge_label: "Поведение списков IP",
                 opt_replace: "Заменить (Удаляет старый и создает новый, рекомендуется)", opt_keep: "Оставить (Сохраняет существующий, добавляет новые IP)",
+                opt_family_label: "Включаемые IP-семейства",
+                opt_ipv4: "IPv4 (рекомендуется)",
+                opt_ipv6: "IPv6 (включайте при необходимости)",
                 opt_obs: "Наблюдать за остальными странами", opt_obs_desc: "Создает правила 'Mangle Passthrough' для подсчета легитимного трафика в Дашборде.",
                 opt_purge: "Очистить старые правила Firewall", opt_purge_desc: "Удаляет старые правила Mangle/Raw, начинающиеся с 'geo-', перед применением новых.",
                 alert_title: "Предупреждение о производительности", alert_text: "Если вы используете коммутатор (серии CRS/CSS) для программной маршрутизации, включение 'Наблюдать за всеми странами' может загрузить ЦП на 100%. Используйте аппаратный маршрутизатор (CCR, RB, CHR).",
@@ -310,7 +345,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 deploy_title: "Развертывание", deploy_btn: "PHP Дашборд",
                 deploy_1: "1. Перенесите <code>geo-policy.rsc</code> на ваш MikroTik через Winbox.",
                 deploy_2: "2. Откройте терминал. <strong>Внимание: путь импорта зависит от вашего накопителя (напр. flash/, disk1/).</strong> Используйте <code>verbose=yes</code>:",
-                log_start: "Запуск. WAN=", log_block: "Страны для блокировки: ", log_obs: " Страны для наблюдения: ", log_purge: "Добавление команд очистки старых правил...", log_dl: "Загрузка: ", log_done: "Готово! Скачивание файла...", log_finish: "Генерация завершена. Файл .rsc создан.", log_ready: "Готов."
+                log_start: "Запуск. WAN=", log_block: "Страны для блокировки: ", log_obs: " Страны для наблюдения: ", log_purge: "Добавление команд очистки старых правил...", log_dl: "Загрузка: ", log_done: "Готово! Скачивание файла...", log_finish: "Генерация завершена. Файл .rsc создан.", log_ready: "Готов.", log_mode: " • Режим списков: "
             },
             zh: {
                 subtitle: "客户端处理 • 按国家/地区分类的源 IP:",
@@ -323,6 +358,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 wan_title: "WAN 接口", wan_list: "接口列表 (如: WAN)", wan_single: "单一接口 (如: ether1)", wan_ph: "接口或列表名称",
                 opt_title: "全局选项", opt_merge_label: "IP 列表行为",
                 opt_replace: "替换 (删除旧列表并重新创建，推荐)", opt_keep: "保留 (保留现有列表，追加新 IP)",
+                opt_family_label: "要包含的 IP 协议族",
+                opt_ipv4: "IPv4（推荐）",
+                opt_ipv6: "IPv6（按需启用）",
                 opt_obs: "观察所有其他国家", opt_obs_desc: "创建 'Mangle Passthrough' 规则，以便在仪表板中计算合法流量。",
                 opt_purge: "清除旧的防火墙规则", opt_purge_desc: "在应用新规则之前，删除以 'geo-' 开头的旧 Mangle/Raw 规则。",
                 alert_title: "硬件性能警告", alert_text: "如果您使用交换机（CRS/CSS 系列）进行软件路由，勾选“观察所有国家”可能会使 CPU 满载。请使用硬件路由器 (CCR, RB, CHR)。",
@@ -330,7 +368,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 deploy_title: "部署", deploy_btn: "仪表板 PHP 文件",
                 deploy_1: "1. 通过 Winbox 将 <code>geo-policy.rsc</code> 传输到您的 MikroTik。",
                 deploy_2: "2. 打开终端。<strong>警告：导入路径取决于您的存储空间（例如 flash/, disk1/）。</strong> 使用 <code>verbose=yes</code> 以防止无提示失败：",
-                log_start: "开始。 WAN=", log_block: "要阻止的国家：", log_obs: " 要观察的国家：", log_purge: "添加旧规则的清除命令...", log_dl: "下载中：", log_done: "完成！正在下载文件...", log_finish: "生成完毕。.rsc 文件已创建。", log_ready: "准备就绪。"
+                log_start: "开始。 WAN=", log_block: "要阻止的国家：", log_obs: " 要观察的国家：", log_purge: "添加旧规则的清除命令...", log_dl: "下载中：", log_done: "完成！正在下载文件...", log_finish: "生成完毕。.rsc 文件已创建。", log_ready: "准备就绪。", log_mode: " • 列表模式: "
             }
         };
 
@@ -359,11 +397,23 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             if (document.getElementById('btn_generate').disabled === false) {
                 document.getElementById('prog_status').innerText = t('log_ready');
             }
+
+            // Appliquer le preset de blocage associé à la langue
+            applyPresetForLang(lang);
         }
         // --- FIN DU DICTIONNAIRE ---
 
+        // Presets de pays bloqués par langue
+        const presetsByLang = {
+            fr: ["af","dz","ao","ag","ar","am","az","bh","bd","by","bj","bt","bo","bw","br","bn","bf","bi","kh","cm","cv","cf","td","cl","cn","co","ci","cu","cy","cd","dj","do","ec","ee","eg","sv","gq","er","sz","et","fj","ga","gm","ge","gh","gr","gt","gn","gw","gy","hk","id","ir","iq","jo","kz","ke","kw","kg","la","lb","ls","lr","lu","ly","mg","mw","ml","mr","mu","mx","mn","ma","mz","mm","na","np","ni","ne","ng","kp","om","pk","pa","py","pe","ph","qa","cg","ru","rw","sa","sn","sl","so","za","ss","lk","sd","sr","sy","tj","tz","tg","tn","tm","ug","uy","uz","ve","vn","ye","zm","zw"],
+            en: ["af","dz","ad","ao","ar","am","az","by","bj","bt","bo","br","bn","bf","bi","kh","cv","cf","td","cl","cn","co","cu","cy","cd","dj","do","ec","eg","sv","gq","er","sz","et","ga","ge","gr","gt","gn","gw","gy","id","ir","iq","jo","kz","kg","la","lb","ls","lr","ly","mg","mw","ml","mr","mu","mx","mn","ma","mz","mm","ne","kp","om","pa","py","pe","qa","cg","ru","rw","sa","sn","sl","so","ss","lk","sd","sr","sy","tj","tz","tg","tn","tm","uz","ve","vn","ye","zm","zw"],
+            es: ["af","dz","ad","ao","am","az","bh","bd","by","bj","bt","bn","bf","bi","kh","cm","cv","cf","td","cn","ci","cy","cd","dj","eg","gq","er","sz","et","fj","ga","gm","ge","gh","gr","gn","gw","gy","hk","id","ir","iq","jo","kz","ke","kw","kg","la","lb","ls","lr","ly","mg","mw","ml","mr","mu","mn","ma","mz","mm","na","np","ne","ng","kp","om","pk","ph","qa","cg","ru","rw","sa","sn","sl","so","za","ss","lk","sd","sr","sy","tj","tz","tg","tn","tm","ug","uz","vn","ye","zm","zw"],
+            de: ["af","dz","ao","ag","ar","am","az","bh","bd","by","bj","bt","bo","bw","br","bn","bf","bi","kh","cm","cv","cf","td","cl","cn","co","ci","cu","cy","cd","dj","do","ec","eg","sv","gq","er","sz","et","fj","ga","gm","ge","gh","gr","gt","gn","gw","gy","hk","id","ir","iq","jo","kz","ke","kw","kg","la","lb","ls","lr","ly","mg","mw","ml","mr","mu","mx","mn","ma","mz","mm","na","np","ni","ne","ng","kp","om","pk","pa","py","pe","ph","qa","cg","ru","rw","sa","sn","sl","so","za","ss","lk","sd","sr","sy","tj","tz","tg","tn","tm","ug","uy","uz","ve","vn","ye","zm","zw"],
+            zh: ["af","dz","ad","ao","ag","ar","am","az","bh","bd","by","bj","bt","bo","bw","br","bn","bf","bi","kh","cm","cv","cf","td","cl","co","ci","cu","cy","cd","dj","do","ec","eg","sv","gq","er","sz","et","fj","ga","gm","ge","gh","gr","gt","gn","gw","gy","id","ir","iq","jo","kz","ke","kw","kg","la","lb","ls","lr","ly","mg","mw","ml","mr","mu","mx","mn","ma","mz","mm","na","np","ni","ne","ng","kp","om","pk","pa","py","pe","ph","qa","cg","ru","rw","sa","sn","sl","so","za","ss","lk","sd","sr","sy","tj","tz","tg","tn","tm","ug","uy","uz","ve","vn","ye","zm","zw"],
+            ru: ["af","dz","ad","ao","ag","ar","bh","bd","bj","bt","bo","bw","br","bn","bf","bi","kh","cm","cv","cf","td","cl","cn","co","ci","cu","cy","cd","dj","do","ec","eg","sv","gq","er","sz","et","fj","ga","gm","ge","gh","gr","gt","gn","gw","gy","hk","id","ir","iq","jo","ke","kw","la","lb","ls","lr","ly","mg","mw","ml","mr","mu","mx","mn","ma","mz","mm","na","np","ni","ne","ng","kp","om","pk","pa","py","pe","ph","qa","cg","rw","sa","sn","sl","so","za","ss","lk","sd","sr","sy","tz","tg","tn","ug","uy","ve","vn","ye","zm","zw"]
+        };
+
         const countriesDict = { "ad":"Andorra", "ae":"United Arab Emirates", "af":"Afghanistan", "ag":"Antigua and Barbuda", "al":"Albania", "am":"Armenia", "ao":"Angola", "ar":"Argentina", "at":"Austria", "au":"Australia", "az":"Azerbaijan", "ba":"Bosnia and Herzegovina", "bb":"Barbados", "bd":"Bangladesh", "be":"Belgium", "bf":"Burkina Faso", "bg":"Bulgaria", "bh":"Bahrain", "bi":"Burundi", "bj":"Benin", "bn":"Brunei", "bo":"Bolivia", "br":"Brazil", "bs":"Bahamas", "bt":"Bhutan", "bw":"Botswana", "by":"Belarus", "bz":"Belize", "ca":"Canada", "cd":"Democratic Republic of the Congo", "cf":"Central African Republic", "cg":"Republic of the Congo", "ch":"Switzerland", "ci":"Cote d'Ivoire", "cl":"Chile", "cm":"Cameroon", "cn":"China", "co":"Colombia", "cr":"Costa Rica", "cu":"Cuba", "cv":"Cape Verde", "cy":"Cyprus", "cz":"Czechia", "de":"Germany", "dj":"Djibouti", "dk":"Denmark", "dm":"Dominica", "do":"Dominican Republic", "dz":"Algeria", "ec":"Ecuador", "ee":"Estonia", "eg":"Egypt", "er":"Eritrea", "es":"Spain", "et":"Ethiopia", "fi":"Finland", "fj":"Fiji", "fr":"France", "ga":"Gabon", "gb":"United Kingdom", "ge":"Georgia", "gh":"Ghana", "gm":"Gambia", "gn":"Guinea", "gq":"Equatorial Guinea", "gr":"Greece", "gt":"Guatemala", "gw":"Guinea-Bissau", "gy":"Guyana", "hk":"Hong Kong", "hn":"Honduras", "hr":"Croatia", "ht":"Haiti", "hu":"Hungary", "id":"Indonesia", "ie":"Ireland", "il":"Israel", "in":"India", "iq":"Iraq", "ir":"Iran", "is":"Iceland", "it":"Italy", "jm":"Jamaica", "jo":"Jordan", "jp":"Japan", "ke":"Kenya", "kg":"Kyrgyzstan", "kh":"Cambodia", "kp":"North Korea", "kr":"South Korea", "kw":"Kuwait", "kz":"Kazakhstan", "la":"Laos", "lb":"Lebanon", "lk":"Sri Lanka", "lr":"Liberia", "ls":"Lesotho", "lt":"Lithuania", "lu":"Luxembourg", "lv":"Latvia", "ly":"Libya", "ma":"Morocco", "md":"Moldova", "me":"Montenegro", "mg":"Madagascar", "mk":"North Macedonia", "ml":"Mali", "mm":"Myanmar", "mn":"Mongolia", "mr":"Mauritania", "mt":"Malta", "mu":"Mauritius", "mv":"Maldives", "mw":"Malawi", "mx":"Mexico", "my":"Malaysia", "mz":"Mozambique", "na":"Namibia", "ne":"Niger", "ng":"Nigeria", "ni":"Nicaragua", "nl":"Netherlands", "no":"Norway", "np":"Nepal", "nz":"New Zealand", "om":"Oman", "pa":"Panama", "pe":"Peru", "ph":"Philippines", "pk":"Pakistan", "pl":"Poland", "pt":"Portugal", "py":"Paraguay", "qa":"Qatar", "ro":"Romania", "rs":"Serbia", "ru":"Russia", "rw":"Rwanda", "sa":"Saudi Arabia", "sd":"Sudan", "se":"Sweden", "sg":"Singapore", "si":"Slovenia", "sk":"Slovakia", "sl":"Sierra Leone", "sn":"Senegal", "so":"Somalia", "sr":"Suriname", "ss":"South Sudan", "sv":"El Salvador", "sy":"Syria", "sz":"Eswatini", "td":"Chad", "tg":"Togo", "th":"Thailand", "tj":"Tajikistan", "tm":"Turkmenistan", "tn":"Tunisia", "tr":"Turkey", "tt":"Trinidad and Tobago", "tw":"Taiwan", "tz":"Tanzania", "ua":"Ukraine", "ug":"Uganda", "us":"United States", "uy":"Uruguay", "uz":"Uzbekistan", "ve":"Venezuela", "vn":"Vietnam", "ye":"Yemen", "za":"South Africa", "zm":"Zambia", "zw":"Zimbabwe" };
-        const defaultBlocked = ["ru","cn","ir","kp","by","vn","hk","bd","id","mx","br","ar","ec","dz","ao","bj","bw","bf","bi","cm","cv","cf","td","km","cg","cd","ci","dj","eg","gq","er","et","ga","gm","gh","gn","gw","ke","ls","lr","ly","mg","mw","ml","mr","mu","ma","mz","na","ne","ng","rw","st","sn","sc","sl","so","za","ss","sd","sz","tz","tg","tn","ug","eh","zm","zw","af","am","az","bh","bn","bt","ge","iq","jo","kg","kh","kw","kz","la","lb","lk","mm","mn","mo","np","om","ph","pk","ps","qa","sa","sy","tj","tl","tm","uz","ye","bo","cl","co","fk","gf","gy","pe","py","sr","uy","ve","cu","fj","fm"];
         
         let countryCheckboxes = {};
         const container = document.getElementById('country_container');
@@ -373,10 +423,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             const name = countriesDict[cc];
             const div = document.createElement('div');
             div.className = 'flex items-center p-2 hover:bg-gray-700/50 rounded cursor-pointer transition';
-            const isChecked = defaultBlocked.includes(cc) ? 'checked' : '';
             
             div.innerHTML = `
-                <input type="checkbox" id="chk_${cc}" value="${cc}" ${isChecked} class="w-4 h-4 text-red-500 bg-gray-900 border-gray-600 rounded focus:ring-red-500 mr-3 pointer-events-none">
+                <input type="checkbox" id="chk_${cc}" value="${cc}" class="w-4 h-4 text-red-500 bg-gray-900 border-gray-600 rounded focus:ring-red-500 mr-3 pointer-events-none">
                 <img src="https://flagcdn.com/20x15/${cc}.png" class="w-5 mr-2 rounded-sm opacity-80" onerror="this.style.display='none'">
                 <label class="text-sm text-gray-300 flex-1 cursor-pointer select-none">${name} <span class="text-gray-500 ml-1">(${cc.toUpperCase()})</span></label>
             `;
@@ -389,6 +438,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             container.appendChild(div);
             countryCheckboxes[cc] = div;
         });
+
+        function applyPresetForLang(lang) {
+            const preset = presetsByLang[lang];
+            if (!preset) return;
+            const codes = new Set(preset);
+            Object.keys(countryCheckboxes).forEach(cc => {
+                const cb = document.getElementById(`chk_${cc}`);
+                cb.checked = codes.has(cc);
+            });
+            syncTextFromCheckboxes();
+        }
 
         function syncTextFromCheckboxes() {
             const selected = [];
@@ -406,7 +466,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             });
         });
 
-        syncTextFromCheckboxes();
+        applyPresetForLang(currentLang);
 
         document.getElementById('country_search').addEventListener('input', function(e) {
             const term = e.target.value.toLowerCase();
@@ -455,6 +515,15 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
             const mode = document.getElementById('merge_mode').value;
             const doPurge = document.getElementById('purge_rules').checked;
             const doObserve = document.getElementById('observe_all').checked;
+            const useIPv4 = document.getElementById('use_ipv4').checked;
+            const useIPv6 = document.getElementById('use_ipv6').checked;
+
+            if (!useIPv4 && !useIPv6) {
+                alert('Veuillez sélectionner au moins une famille IP (IPv4 ou IPv6).');
+                document.getElementById('btn_generate').disabled = false;
+                document.getElementById('btn_generate').classList.remove('opacity-50', 'cursor-not-allowed');
+                return;
+            }
 
             const blockSet = [];
             Object.keys(countriesDict).forEach(cc => {
@@ -488,9 +557,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'download_dashboard') {
                 for (const cc of group.list) {
                     const cname = countriesDict[cc].toUpperCase();
                     document.getElementById('prog_status').innerText = `${t('log_dl')}${cname}...`;
-                    
-                    const v4 = await fetchPrefixes(cc, 'ipv4');
-                    const v6 = await fetchPrefixes(cc, 'ipv6');
+                    const v4 = useIPv4 ? await fetchPrefixes(cc, 'ipv4') : [];
+                    const v6 = useIPv6 ? await fetchPrefixes(cc, 'ipv6') : [];
                     
                     logProgress(`${group.type} ${cname} : ${v4.length} IP(v4) / ${v6.length} IP(v6)`, group.type==='BLOCK' ? 'text-red-400' : 'text-emerald-400');
 

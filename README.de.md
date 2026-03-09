@@ -72,6 +72,11 @@ $USE_HTTPS = false;      // Auf true setzen, wenn ein SSL-Zertifikat auf RouterO
 * **AE (VAE):** Wichtige AWS / Azure-Knoten.
 * **EE (Estland) & BG (Bulgarien):** Stark in die europäische IT integriert.
 
+## 🔗 Nützliche Links
+
+* **Online-Generator**: [MikroTik Geo-Policy Generator (gehostet)](https://jbsan.fr/mikrotik-geo-counrty-generator.php)
+* **GitHub-Projekt**: [sannier3/mikrotik-geoip-block-manager](https://github.com/sannier3/mikrotik-geoip-block-manager)
+
 ## 🤝 Credits
 
 * IP-Listen gepflegt durch das [ipverse/country-ip-blocks](https://github.com/ipverse/country-ip-blocks) Projekt.
