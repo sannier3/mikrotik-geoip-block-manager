@@ -11,6 +11,8 @@ $MK_IP = '192.168.88.1'; // IP du MikroTik
 $MK_USER = 'admin';      // Utilisateur API
 $MK_PASS = 'admin';      // Mot de passe
 $USE_HTTPS = false;      // Mettre true si www-ssl est configuré
+$FLAGS_BASE_URL = './assets/flags'; // URL de base des drapeaux
+$FLAGS_FILE_EXT = 'svg';            // Extension des fichiers de drapeaux: png, svg, webp...
 
 // ==========================================
 // 2. BACKEND (API MIKROTIK)
@@ -102,6 +104,16 @@ if (isset($_GET['fetch_data'])) {
         body { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
         .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 1rem; }
         #map { width: 100%; height: 400px; }
+        .country-flag {
+            width: 20px;
+            height: 15px;
+            min-width: 20px;
+            object-fit: cover;
+            border-radius: 0.125rem;
+            opacity: 0.8;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.04);
+        }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #1e293b; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
@@ -226,6 +238,11 @@ if (isset($_GET['fetch_data'])) {
             </div>
         </div>
 
+        <p class="mt-4 text-center text-xs text-gray-500">
+            <span data-i18n="flags_credit">Logos des drapeaux fournis par</span>
+            <a href="https://flagpedia.net" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition">Flagpedia.net</a>
+        </p>
+
     </div>
 
     <script>
@@ -238,7 +255,8 @@ if (isset($_GET['fetch_data'])) {
                 bar_title: "Top 10 Pays (Bloqués vs Autorisés)", chart_blocked: "Bloqué", chart_obs: "Autorisé",
                 line_title: "Bande Passante en Temps Réel", line_badge: "Mise à jour 5s", line_desc: "Vitesse du trafic traité par les règles (Kbps)",
                 table_title: "Données Détaillées par Pays", th_cc: "Pays", th_b_bytes: "Bloqué (Octets)", th_b_pkts: "Bloqué (Pkt)", th_o_bytes: "Autorisé (Octets)", th_o_pkts: "Autorisé (Pkt)", th_ratio: "Ratio IPv4 / IPv6", th_total: "Total",
-                blocked_list_title: "Pays bloqués — liste à copier", blocked_list_desc: "Codes pays à deux lettres (séparés par des espaces) pour regénérer la liste de blocage.", blocked_list_btn: "Copier", blocked_list_copied: "Copié"
+                blocked_list_title: "Pays bloqués — liste à copier", blocked_list_desc: "Codes pays à deux lettres (séparés par des espaces) pour regénérer la liste de blocage.", blocked_list_btn: "Copier", blocked_list_copied: "Copié",
+                flags_credit: "Logos des drapeaux fournis par"
             },
             en: {
                 subtitle: "MikroTik Global Traffic Analysis (Live 5s)", btn_refresh: "Force Refresh", sync_live: "Live Sync", sync_err: "Sync Error",
@@ -247,7 +265,8 @@ if (isset($_GET['fetch_data'])) {
                 bar_title: "Top 10 Countries (Blocked vs Allowed)", chart_blocked: "Blocked", chart_obs: "Allowed",
                 line_title: "Real-Time Bandwidth", line_badge: "5s Update", line_desc: "Traffic speed processed by rules (Kbps)",
                 table_title: "Detailed Data by Country", th_cc: "Country", th_b_bytes: "Blocked (Bytes)", th_b_pkts: "Blocked (Pkt)", th_o_bytes: "Allowed (Bytes)", th_o_pkts: "Allowed (Pkt)", th_ratio: "IPv4 / IPv6 Ratio", th_total: "Total",
-                blocked_list_title: "Blocked countries — copy list", blocked_list_desc: "Two-letter country codes (space-separated) to regenerate the block list.", blocked_list_btn: "Copy", blocked_list_copied: "Copied"
+                blocked_list_title: "Blocked countries — copy list", blocked_list_desc: "Two-letter country codes (space-separated) to regenerate the block list.", blocked_list_btn: "Copy", blocked_list_copied: "Copied",
+                flags_credit: "Flag logos provided by"
             },
             de: {
                 subtitle: "MikroTik Globale Verkehrsanalyse (Live 5s)", btn_refresh: "Aktualisieren", sync_live: "Live Sync", sync_err: "Sync Fehler",
@@ -256,7 +275,8 @@ if (isset($_GET['fetch_data'])) {
                 bar_title: "Top 10 Länder (Blockiert vs Erlaubt)", chart_blocked: "Blockiert", chart_obs: "Erlaubt",
                 line_title: "Echtzeit-Bandbreite", line_badge: "5s Update", line_desc: "Verarbeitete Verkehrsgeschwindigkeit (Kbps)",
                 table_title: "Detaillierte Daten nach Land", th_cc: "Land", th_b_bytes: "Blockiert (Bytes)", th_b_pkts: "Blockiert (Pkt)", th_o_bytes: "Erlaubt (Bytes)", th_o_pkts: "Erlaubt (Pkt)", th_ratio: "IPv4 / IPv6 Verhältnis", th_total: "Gesamt",
-                blocked_list_title: "Blockierte Länder — Liste zum Kopieren", blocked_list_desc: "Zweibuchstaben-Ländercodes (durch Leerzeichen getrennt) zum Neuerstellen der Blockliste.", blocked_list_btn: "Kopieren", blocked_list_copied: "Kopiert"
+                blocked_list_title: "Blockierte Länder — Liste zum Kopieren", blocked_list_desc: "Zweibuchstaben-Ländercodes (durch Leerzeichen getrennt) zum Neuerstellen der Blockliste.", blocked_list_btn: "Kopieren", blocked_list_copied: "Kopiert",
+                flags_credit: "Flaggenlogos bereitgestellt von"
             },
             es: {
                 subtitle: "Análisis de tráfico global MikroTik (En vivo 5s)", btn_refresh: "Actualizar", sync_live: "Sincronizado", sync_err: "Error Sync",
@@ -265,7 +285,8 @@ if (isset($_GET['fetch_data'])) {
                 bar_title: "Top 10 Países (Bloqueados vs Permitidos)", chart_blocked: "Bloqueado", chart_obs: "Permitido",
                 line_title: "Ancho de Banda en Tiempo Real", line_badge: "Actualización 5s", line_desc: "Velocidad de tráfico procesado por reglas (Kbps)",
                 table_title: "Datos Detallados por País", th_cc: "País", th_b_bytes: "Bloqueado (Bytes)", th_b_pkts: "Bloqueado (Pkt)", th_o_bytes: "Permitido (Bytes)", th_o_pkts: "Permitido (Pkt)", th_ratio: "Ratio IPv4 / IPv6", th_total: "Total",
-                blocked_list_title: "Países bloqueados — lista para copiar", blocked_list_desc: "Códigos de país de dos letras (separados por espacios) para regenerar la lista de bloqueo.", blocked_list_btn: "Copiar", blocked_list_copied: "Copiado"
+                blocked_list_title: "Países bloqueados — lista para copiar", blocked_list_desc: "Códigos de país de dos letras (separados por espacios) para regenerar la lista de bloqueo.", blocked_list_btn: "Copiar", blocked_list_copied: "Copiado",
+                flags_credit: "Logotipos de banderas proporcionados por"
             },
             ru: {
                 subtitle: "Глобальный анализ трафика MikroTik (Live 5s)", btn_refresh: "Обновить", sync_live: "Синхр.", sync_err: "Ошибка Синхр.",
@@ -274,7 +295,8 @@ if (isset($_GET['fetch_data'])) {
                 bar_title: "Топ 10 стран (Блок. vs Разреш.)", chart_blocked: "Заблокировано", chart_obs: "Разрешено",
                 line_title: "Пропускная способность онлайн", line_badge: "Обновление 5с", line_desc: "Скорость обработки трафика правилами (Кбит/с)",
                 table_title: "Подробные данные по странам", th_cc: "Страна", th_b_bytes: "Заблок. (Байт)", th_b_pkts: "Заблок. (Пакеты)", th_o_bytes: "Разреш. (Байт)", th_o_pkts: "Разреш. (Пакеты)", th_ratio: "Соотношение IPv4/IPv6", th_total: "Итого",
-                blocked_list_title: "Заблокированные страны — список для копирования", blocked_list_desc: "Двухбуквенные коды стран (через пробел) для пересоздания списка блокировки.", blocked_list_btn: "Копировать", blocked_list_copied: "Скопировано"
+                blocked_list_title: "Заблокированные страны — список для копирования", blocked_list_desc: "Двухбуквенные коды стран (через пробел) для пересоздания списка блокировки.", blocked_list_btn: "Копировать", blocked_list_copied: "Скопировано",
+                flags_credit: "Логотипы флагов предоставлены"
             },
             zh: {
                 subtitle: "MikroTik 全球流量分析 (实时 5 秒)", btn_refresh: "强制刷新", sync_live: "实时同步", sync_err: "同步错误",
@@ -283,12 +305,16 @@ if (isset($_GET['fetch_data'])) {
                 bar_title: "前 10 个国家 (阻止 vs 允许)", chart_blocked: "已阻止", chart_obs: "已允许",
                 line_title: "实时带宽", line_badge: "5秒更新", line_desc: "规则处理的流量速度 (Kbps)",
                 table_title: "按国家分类的详细数据", th_cc: "国家", th_b_bytes: "阻止 (字节)", th_b_pkts: "阻止 (包)", th_o_bytes: "允许 (字节)", th_o_pkts: "允许 (包)", th_ratio: "IPv4 / IPv6 比例", th_total: "总计",
-                blocked_list_title: "已阻止国家 — 可复制列表", blocked_list_desc: "两字母国家代码（空格分隔）用于重新生成阻止列表。", blocked_list_btn: "复制", blocked_list_copied: "已复制"
+                blocked_list_title: "已阻止国家 — 可复制列表", blocked_list_desc: "两字母国家代码（空格分隔）用于重新生成阻止列表。", blocked_list_btn: "复制", blocked_list_copied: "已复制",
+                flags_credit: "旗帜图标由以下提供"
             }
         };
 
         let currentLang = 'fr';
+        const FLAG_BASE_URL = <?php echo json_encode(rtrim($FLAGS_BASE_URL, '/')); ?>;
+        const FLAG_FILE_EXT = <?php echo json_encode(ltrim($FLAGS_FILE_EXT, '.')); ?>;
         function t(key) { return i18n[currentLang][key] || key; }
+        function getFlagUrl(countryCode) { return `${FLAG_BASE_URL}/${countryCode.toLowerCase()}.${FLAG_FILE_EXT}`; }
 
         function changeLang(lang) {
             currentLang = lang;
@@ -307,6 +333,7 @@ if (isset($_GET['fetch_data'])) {
         // --- FIN TRADUCTIONS ---
 
         let protocolChart, topCountriesChart, liveBandwidthChart, worldMap;
+        const tableRowsByCountry = new Map();
         let lastTimestamp = 0; let lastTotalBlockedBytes = 0; let lastTotalObservedBytes = 0;
         let timeLabels = []; let bpsBlockedData = []; let bpsObservedData = [];
         const MAX_HISTORY = 12;
@@ -490,45 +517,90 @@ if (isset($_GET['fetch_data'])) {
             });
         }
 
+        function createCountryRow(country) {
+            const tr = document.createElement('tr');
+            tr.className = 'border-b border-gray-700/50 hover:bg-gray-800/30 transition';
+            tr.innerHTML = `
+                <td class="py-3 px-4 font-medium">
+                    <div class="flex items-center gap-2">
+                        <img src="${getFlagUrl(country.cc)}" alt="${country.cc}" class="country-flag" loading="lazy" decoding="async" onerror="this.style.display='none'">
+                        <span data-role="country-name"></span>
+                    </div>
+                </td>
+                <td data-role="blocked-bytes" class="py-3 px-4 text-right text-red-300"></td>
+                <td data-role="blocked-pkts" class="py-3 px-4 text-right text-red-300/70"></td>
+                <td data-role="observed-bytes" class="py-3 px-4 text-right text-emerald-300"></td>
+                <td data-role="observed-pkts" class="py-3 px-4 text-right text-emerald-300/70"></td>
+                <td class="py-3 px-4 align-middle w-48">
+                    <div class="flex items-center justify-between text-xs mb-1 font-medium">
+                        <span data-role="pct-v4" class="text-blue-400"></span>
+                        <span data-role="pct-v6" class="text-purple-400"></span>
+                    </div>
+                    <div class="w-full bg-gray-700 rounded-full h-1.5 flex overflow-hidden">
+                        <div data-role="bar-v4" class="bg-blue-500 h-1.5"></div>
+                        <div data-role="bar-v6" class="bg-purple-500 h-1.5"></div>
+                    </div>
+                </td>
+                <td data-role="total-bytes" class="py-3 px-4 text-right font-semibold text-gray-200"></td>
+            `;
+
+            tr._refs = {
+                countryName: tr.querySelector('[data-role="country-name"]'),
+                blockedBytes: tr.querySelector('[data-role="blocked-bytes"]'),
+                blockedPkts: tr.querySelector('[data-role="blocked-pkts"]'),
+                observedBytes: tr.querySelector('[data-role="observed-bytes"]'),
+                observedPkts: tr.querySelector('[data-role="observed-pkts"]'),
+                pctV4: tr.querySelector('[data-role="pct-v4"]'),
+                pctV6: tr.querySelector('[data-role="pct-v6"]'),
+                barV4: tr.querySelector('[data-role="bar-v4"]'),
+                barV6: tr.querySelector('[data-role="bar-v6"]'),
+                totalBytes: tr.querySelector('[data-role="total-bytes"]')
+            };
+
+            return tr;
+        }
+
+        function updateCountryRow(tr, country) {
+            const refs = tr._refs;
+            const pctV4 = country.totalBytes ? Math.round((country.v4Bytes / country.totalBytes) * 100) : 0;
+            const pctV6 = country.totalBytes ? Math.round((country.v6Bytes / country.totalBytes) * 100) : 0;
+
+            refs.countryName.textContent = country.name;
+            refs.blockedBytes.textContent = formatBytes(country.blockedBytes);
+            refs.blockedPkts.textContent = formatNumber(country.blockedPkts);
+            refs.observedBytes.textContent = formatBytes(country.observedBytes);
+            refs.observedPkts.textContent = formatNumber(country.observedPkts);
+            refs.pctV4.textContent = `${pctV4}% v4`;
+            refs.pctV6.textContent = `${pctV6}% v6`;
+            refs.barV4.style.width = `${pctV4}%`;
+            refs.barV6.style.width = `${pctV6}%`;
+            refs.totalBytes.textContent = formatBytes(country.totalBytes);
+        }
+
         function updateTable(countries) {
             const tbody = document.getElementById('table-body');
-            tbody.innerHTML = '';
             countries.sort((a, b) => b.totalBytes - a.totalBytes);
+            const activeCodes = new Set(countries.map(c => c.cc));
 
+            for (const [cc, row] of tableRowsByCountry.entries()) {
+                if (!activeCodes.has(cc)) {
+                    row.remove();
+                    tableRowsByCountry.delete(cc);
+                }
+            }
+
+            const fragment = document.createDocumentFragment();
             countries.forEach(c => {
-                let pctV4 = c.totalBytes ? Math.round((c.v4Bytes / c.totalBytes) * 100) : 0;
-                let pctV6 = c.totalBytes ? Math.round((c.v6Bytes / c.totalBytes) * 100) : 0;
-
-                const tr = document.createElement('tr');
-                tr.className = 'border-b border-gray-700/50 hover:bg-gray-800/30 transition';
-                
-                let ratioHtml = `
-                    <td class="py-3 px-4 align-middle w-48">
-                        <div class="flex items-center justify-between text-xs mb-1 font-medium">
-                            <span class="text-blue-400">${pctV4}% v4</span>
-                            <span class="text-purple-400">${pctV6}% v6</span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-1.5 flex overflow-hidden">
-                            <div class="bg-blue-500 h-1.5" style="width: ${pctV4}%"></div>
-                            <div class="bg-purple-500 h-1.5" style="width: ${pctV6}%"></div>
-                        </div>
-                    </td>
-                `;
-
-                tr.innerHTML = `
-                    <td class="py-3 px-4 font-medium flex items-center gap-2">
-                        <img src="https://flagcdn.com/20x15/${c.cc.toLowerCase()}.png" alt="${c.cc}" class="rounded-sm opacity-80" onerror="this.style.display='none'">
-                        ${c.name}
-                    </td>
-                    <td class="py-3 px-4 text-right text-red-300">${formatBytes(c.blockedBytes)}</td>
-                    <td class="py-3 px-4 text-right text-red-300/70">${formatNumber(c.blockedPkts)}</td>
-                    <td class="py-3 px-4 text-right text-emerald-300">${formatBytes(c.observedBytes)}</td>
-                    <td class="py-3 px-4 text-right text-emerald-300/70">${formatNumber(c.observedPkts)}</td>
-                    ${ratioHtml}
-                    <td class="py-3 px-4 text-right font-semibold text-gray-200">${formatBytes(c.totalBytes)}</td>
-                `;
-                tbody.appendChild(tr);
+                let tr = tableRowsByCountry.get(c.cc);
+                if (!tr) {
+                    tr = createCountryRow(c);
+                    tableRowsByCountry.set(c.cc, tr);
+                }
+                updateCountryRow(tr, c);
+                fragment.appendChild(tr);
             });
+
+            tbody.appendChild(fragment);
         }
 
         changeLang('fr'); // Init translation on load
